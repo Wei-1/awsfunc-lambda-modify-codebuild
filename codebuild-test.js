@@ -12,23 +12,32 @@ exports.handler = (event, context) => {
     // get s3 data from datalake s3 trigger event
     const aname = event.name;
     console.log('The name', aname);
-
-    // fpc-tw/quality-prediction/brvcm/fpc-usa/target/lims/csv/2020/01/01/FLBR_VCM_QC_NT503_20180101_20200601.csv
+    const projname = "CodebuildTestAPI";
+    
     var params = {
-      name: 'CodebuildTestAPI', /* required */
-      environment: {
-        environmentVariables: [
-          {
-            name: 'aname', /* required */
-            value: aname, /* required */
-            type: 'PLAINTEXT'
-          }
-        ]
-      }
+        names: [projname]
     };
-    codebuild.updateProject(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);           // successful response
-      return data;
+    codebuild.batchGetProjects(params, function(err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else     console.log(data);           // successful response
+        var projectdata = data['projects'][0];
+        console.log(projectdata);
+      
+        projectdata['environment']['environmentVariables'] = [
+            {
+                name: 'aname', /* required */
+                value: aname, /* required */
+                type: 'PLAINTEXT'
+            }
+        ];
+        delete projectdata['badge'];
+        delete projectdata['arn'];
+        delete projectdata['created'];
+        delete projectdata['lastModified'];
+        codebuild.updateProject(projectdata, function(err, data) {
+          if (err) console.log(err, err.stack); // an error occurred
+          else     console.log(data);           // successful response
+          return data;
+        });
     });
 };
