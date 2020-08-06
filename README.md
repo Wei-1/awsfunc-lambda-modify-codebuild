@@ -18,4 +18,4 @@ But testing this function, we should see codebuild environment variable been set
 
 ----
 
-If the current hypothesis fails, we will need to pull the current codebuild project and set the parameter using the new variable.
+One might need to add some policy to Lambda role
