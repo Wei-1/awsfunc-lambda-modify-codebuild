@@ -1,0 +1,12 @@
+#build.yml
+
+version: 0.2
+
+env:
+  variables:
+      aname: "World"
+
+phases:
+  build:
+    commands:
+       - echo "Hello "$aname"!"
